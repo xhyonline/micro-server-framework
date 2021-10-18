@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package basic;
+
+option go_package = "github.com/xhyonline/micro-server-framework/gen/golang/basic";
+
+
+// Empty 空值
+message Empty {
+
+}
+
+// String
+message String {
+  string data = 1;
+}
+
+// Bool
+message Bool {
+  bool Bool = 1;
+}
+
+// Int32
+message Int32 {
+  int32 data = 1;
+}
+
+// Int64
+message Int64 {
+  int64 data = 1;
+}
+
+// Uint64
+message Uint64 {
+  uint64 data=1;
+}
+
+// Float
+message Float {
+  float data = 1;
+}
+

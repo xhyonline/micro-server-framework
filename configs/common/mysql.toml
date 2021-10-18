@@ -1,0 +1,9 @@
+[mysql]
+host = ""
+port = 3306
+user = "root"
+password = ""
+max_conn_num = 10
+idle_conn_num= 1
+# 数据库名
+db = "ceshi"

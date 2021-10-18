@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package golang;
+
+option go_package = "github.com/xhyonline/micro-server-framework/gen/golang";
+
+import "user/user.proto";
+import "basic/basic.proto";
+
+service Runner {
+  rpc Hello (basic.Empty) returns (user.UserResponse);
+}

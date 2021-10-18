@@ -1,0 +1,8 @@
+[redis]
+host = ""
+port = 6379
+password = ""
+max_connect = 10
+idle_connect= 1
+# 默认 0 号数据库
+db = 0

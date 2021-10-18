@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/xhyonline/micro-server-framework/gen/golang/user";
+
+
+message UserResponse {
+  string Name = 1;
+}
