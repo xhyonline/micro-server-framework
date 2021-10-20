@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"net"
 	"os"
 
@@ -51,6 +52,8 @@ func Run() <-chan struct{} {
 		Logger.Errorf("网卡信息 %+v", addr)
 		os.Exit(1)
 	}
+	fmt.Println(v)
+	os.Exit(1)
 	l, err := net.Listen("tcp", v.To4().String()+":0")
 	if err != nil {
 		Logger.Errorf("监听失败 %s", err)
