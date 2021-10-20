@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strconv"
 
 	"github.com/xhyonline/xutil/micro"
 
@@ -56,12 +57,22 @@ func Run() <-chan struct{} {
 	golang.RegisterRunnerServer(g.Server, &rpc.Service{})
 	g.Run()
 	ctx := sig.Get().RegisterClose(g)
-	Logger.Info("服务"+configs.Name, "已启动,启动地址:"+fmt.Sprintf("%s:%d", ip, port))
 
+	// 服务注册
+	if err := micro.NewMicroServiceRegister(Instance.ETCD, configs.Instance.ETCD.Prefix, 10).
+		Register(configs.Name, &micro.Node{
+			Host: ip,
+			Port: strconv.Itoa(port),
+		}); err != nil {
+		Logger.Errorf("服务注册失败 %s", err)
+		return nil
+	}
+
+	Logger.Info("服务"+configs.Name, "已启动,启动地址:"+fmt.Sprintf("%s:%d", ip, port))
 	return ctx.Done()
 }
 
-// internalAddress 启动服务地址
+// internalAddress 获取服务地址
 func internalAddress() string {
 	addr, err := helper.IntranetAddress()
 	if err != nil {
@@ -70,7 +81,7 @@ func internalAddress() string {
 	}
 	v, ok := addr["eth0"]
 	if !ok {
-		Logger.Errorf("未发现内网网卡 eth0 %s", err)
+		Logger.Errorf("未发现内网网卡 eth0")
 		Logger.Errorf("网卡信息 %+v", addr)
 		return ""
 	}
@@ -87,9 +98,4 @@ func internalAddress() string {
 	address := ip.String() + ":0"
 	address = "127.0.0.1:0"
 	return address
-}
-
-func registerMicroServer(node *micro.Node) error {
-	register := micro.NewMicroServiceRegister(Instance.ETCD, "/micro/server", 3)
-	return register.Register(configs.Name, node)
 }

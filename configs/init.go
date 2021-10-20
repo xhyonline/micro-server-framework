@@ -32,7 +32,9 @@ type Redis struct {
 }
 
 type ETCD struct {
-	dbCommon
+	Host   string `toml:"host"`
+	Port   int    `toml:"port"`
+	Prefix string `toml:"prefix"`
 }
 
 type MySQL struct {

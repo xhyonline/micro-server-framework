@@ -16,3 +16,24 @@ github上直接安装一个二进制
 
 `protoc --gogofaster_out=plugins=grpc:. ./dir/*`
 
+
+## 三、docker 简易安装 ETCD
+
+```
+export HostIP=0.0.0.0
+```
+```
+docker run -itd --rm \
+  -p 2379:2379 \
+  -p 2380:2380 \
+  --volume=/etcd-data:/etcd-data \
+  --name etcd quay.io/coreos/etcd:latest \
+  /usr/local/bin/etcd \
+  --data-dir=/etcd-data --name node1 \
+  --initial-advertise-peer-urls http://${HostIP}:2380 --listen-peer-urls http://${HostIP}:2380 \
+  --advertise-client-urls http://${HostIP}:2379 --listen-client-urls http://${HostIP}:2379 \
+  --initial-cluster node1=http://${HostIP}:2380
+```
+```
+etcdctl --endpoints=http://${HostIP}:2379 member list
+```
