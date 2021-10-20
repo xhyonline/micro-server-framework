@@ -33,7 +33,7 @@ func (s *grpcInstance) GracefulClose() {
 func (s *grpcInstance) Run() {
 	go func() {
 		if err := s.Serve(s.listener); err != nil {
-			Logger.Panicf("服务 %s 启动失败 %s", configs.Name, err)
+			Logger.Errorf("服务 %s 启动失败 %s", configs.Name, err)
 			os.Exit(1)
 		}
 	}()
@@ -42,15 +42,15 @@ func (s *grpcInstance) Run() {
 func Run() <-chan struct{} {
 	addr, err := helper.IntranetAddress()
 	if err != nil {
-		Logger.Panicf("获取内网地址失败 %s", err)
+		Logger.Errorf("获取内网地址失败 %s", err)
 	}
-	v, ok := addr["Eth0"]
+	v, ok := addr["eth0"]
 	if !ok {
-		Logger.Panicf("未发现内网地址 %s", err)
+		Logger.Errorf("未发现内网地址 Eth0 %s", err)
 	}
 	l, err := net.Listen("tcp", v.String()+":0")
 	if err != nil {
-		Logger.Panicf("监听失败 %s", err)
+		Logger.Errorf("监听失败 %s", err)
 	}
 	s := grpc.NewServer()
 	g := &grpcInstance{Server: s, listener: l}
@@ -58,4 +58,5 @@ func Run() <-chan struct{} {
 	g.Run()
 	ctx := sig.Get().RegisterClose(g)
 	return ctx.Done()
+
 }
