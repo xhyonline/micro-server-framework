@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"net"
 	"os"
 
@@ -44,20 +43,30 @@ func Run() <-chan struct{} {
 	addr, err := helper.IntranetAddress()
 	if err != nil {
 		Logger.Errorf("获取内网地址失败 %s", err)
-		os.Exit(1)
+		return nil
 	}
-	fmt.Printf("调试 %+v", addr)
-	os.Exit(1)
+
 	v, ok := addr["eth0"]
 	if !ok {
 		Logger.Errorf("未发现内网网卡 eth0 %s", err)
 		Logger.Errorf("网卡信息 %+v", addr)
-		os.Exit(1)
+		return nil
 	}
-	os.Exit(1)
-	l, err := net.Listen("tcp", v.To4().String()+":0")
+	var ip net.IP
+	for _, item := range v {
+		if ip = item.To4(); ip != nil {
+			break
+		}
+	}
+	if ip.String() == "" {
+		Logger.Errorf("未发现 IPv4 地址")
+		return nil
+	}
+	address := ip.String() + ":0"
+	l, err := net.Listen("tcp", address)
 	if err != nil {
 		Logger.Errorf("监听失败 %s", err)
+		return nil
 	}
 	s := grpc.NewServer()
 	g := &grpcInstance{Server: s, listener: l}
@@ -65,5 +74,4 @@ func Run() <-chan struct{} {
 	g.Run()
 	ctx := sig.Get().RegisterClose(g)
 	return ctx.Done()
-
 }

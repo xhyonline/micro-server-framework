@@ -205,6 +205,8 @@ github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhe
 github.com/xdg/stringprep v1.0.0/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0HrGL1Y=
 github.com/xhyonline/xutil v0.1.20210903 h1:tpfyG2Za9hftUdubrjkP+rtGdnIJ1xpF/uwEDgvG1rg=
 github.com/xhyonline/xutil v0.1.20210903/go.mod h1:tldqB4UxjWnHISSmzdVwNM9tBkrPIsIQlYXV9hmhV8I=
+github.com/xhyonline/xutil v0.1.20211020 h1:3m5WAXPaIx+WcqsR1KIpSKKlEd/qu+nIz8qoej2qrqk=
+github.com/xhyonline/xutil v0.1.20211020/go.mod h1:tldqB4UxjWnHISSmzdVwNM9tBkrPIsIQlYXV9hmhV8I=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
