@@ -43,10 +43,13 @@ func Run() <-chan struct{} {
 	addr, err := helper.IntranetAddress()
 	if err != nil {
 		Logger.Errorf("获取内网地址失败 %s", err)
+		os.Exit(1)
 	}
 	v, ok := addr["eth0"]
 	if !ok {
-		Logger.Errorf("未发现内网地址 Eth0 %s", err)
+		Logger.Errorf("未发现内网网卡 eth0 %s", err)
+		Logger.Errorf("网卡信息 %+v", addr)
+		os.Exit(1)
 	}
 	l, err := net.Listen("tcp", v.To4().String()+":0")
 	if err != nil {
