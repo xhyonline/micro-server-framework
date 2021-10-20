@@ -12,9 +12,17 @@ import (
 // Env 当前环境
 var Env = "dev"
 
+// Name 服务名
+var Name = "micro-server-framework"
+
 type Config struct {
+	Base  *Base  `toml:"base"`
 	MySQL *MySQL `toml:"mysql"`
 	Redis *Redis `toml:"redis"`
+}
+
+type Base struct {
+	Name string `toml:"name"`
 }
 
 type Redis struct {
@@ -47,7 +55,7 @@ type Option func() string
 var filePath = "./configs/common/"
 
 const (
-	// 生产环境读取配置文件的地址
+	// 生产环境配置读取配置文件的地址
 	productConfigPath = "/usr/local/go-micro/common/"
 )
 
@@ -84,5 +92,11 @@ func WithMySQL() Option {
 func WithRedis() Option {
 	return func() string {
 		return filePath + "redis.toml"
+	}
+}
+
+func WithBaseConfig() Option {
+	return func() string {
+		return filePath + Name + ".toml"
 	}
 }

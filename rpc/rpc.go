@@ -11,10 +11,6 @@ type Service struct {
 	hello
 }
 
-func NewService() *Service {
-	return new(Service)
-}
-
 type hello struct {
 }
 
