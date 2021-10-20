@@ -48,7 +48,7 @@ func Run() <-chan struct{} {
 	if !ok {
 		Logger.Errorf("未发现内网地址 Eth0 %s", err)
 	}
-	l, err := net.Listen("tcp", v.String()+":0")
+	l, err := net.Listen("tcp", v.To4().String()+":0")
 	if err != nil {
 		Logger.Errorf("监听失败 %s", err)
 	}
