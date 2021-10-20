@@ -8,7 +8,7 @@ import (
 	. "github.com/xhyonline/micro-server-framework/component" // 忽略包名
 )
 
-func main() {
+func main1() {
 	// 初始化配置
 	configs.Init(configs.WithBaseConfig(), configs.WithRedis(), configs.WithMySQL())
 	// 初始化 mysql 、redis 等服务组件
