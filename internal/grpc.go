@@ -46,13 +46,14 @@ func Run() <-chan struct{} {
 		Logger.Errorf("获取内网地址失败 %s", err)
 		os.Exit(1)
 	}
+	fmt.Printf("调试 %+v", addr)
+	os.Exit(1)
 	v, ok := addr["eth0"]
 	if !ok {
 		Logger.Errorf("未发现内网网卡 eth0 %s", err)
 		Logger.Errorf("网卡信息 %+v", addr)
 		os.Exit(1)
 	}
-	fmt.Println(v)
 	os.Exit(1)
 	l, err := net.Listen("tcp", v.To4().String()+":0")
 	if err != nil {
