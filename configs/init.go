@@ -19,6 +19,7 @@ type Config struct {
 	Base  *Base  `toml:"base"`
 	MySQL *MySQL `toml:"mysql"`
 	Redis *Redis `toml:"redis"`
+	ETCD  *ETCD  `toml:"etcd"`
 }
 
 type Base struct {
@@ -28,6 +29,10 @@ type Base struct {
 type Redis struct {
 	dbCommon
 	DB int `toml:"db"`
+}
+
+type ETCD struct {
+	dbCommon
 }
 
 type MySQL struct {
@@ -98,5 +103,11 @@ func WithRedis() Option {
 func WithBaseConfig() Option {
 	return func() string {
 		return filePath + Name + ".toml"
+	}
+}
+
+func WithETCD() Option {
+	return func() string {
+		return filePath + "etcd.toml"
 	}
 }

@@ -1,8 +1,11 @@
 package internal
 
 import (
+	"fmt"
 	"net"
 	"os"
+
+	"github.com/xhyonline/xutil/micro"
 
 	"github.com/xhyonline/micro-server-framework/gen/golang"
 	"github.com/xhyonline/micro-server-framework/rpc"
@@ -40,17 +43,36 @@ func (s *grpcInstance) Run() {
 }
 
 func Run() <-chan struct{} {
+	l, err := net.Listen("tcp", internalAddress())
+	if err != nil {
+		Logger.Errorf("监听失败 %s", err)
+		return nil
+	}
+	addr := l.Addr().(*net.TCPAddr)
+	port := addr.Port
+	ip := addr.IP.String()
+	s := grpc.NewServer()
+	g := &grpcInstance{Server: s, listener: l}
+	golang.RegisterRunnerServer(g.Server, &rpc.Service{})
+	g.Run()
+	ctx := sig.Get().RegisterClose(g)
+	Logger.Info("服务"+configs.Name, "已启动,启动地址:"+fmt.Sprintf("%s:%d", ip, port))
+
+	return ctx.Done()
+}
+
+// internalAddress 启动服务地址
+func internalAddress() string {
 	addr, err := helper.IntranetAddress()
 	if err != nil {
 		Logger.Errorf("获取内网地址失败 %s", err)
-		return nil
+		return ""
 	}
-
 	v, ok := addr["eth0"]
 	if !ok {
 		Logger.Errorf("未发现内网网卡 eth0 %s", err)
 		Logger.Errorf("网卡信息 %+v", addr)
-		return nil
+		return ""
 	}
 	var ip net.IP
 	for _, item := range v {
@@ -60,18 +82,14 @@ func Run() <-chan struct{} {
 	}
 	if ip.String() == "" {
 		Logger.Errorf("未发现 IPv4 地址")
-		return nil
+		return ""
 	}
 	address := ip.String() + ":0"
-	l, err := net.Listen("tcp", address)
-	if err != nil {
-		Logger.Errorf("监听失败 %s", err)
-		return nil
-	}
-	s := grpc.NewServer()
-	g := &grpcInstance{Server: s, listener: l}
-	golang.RegisterRunnerServer(g.Server, &rpc.Service{})
-	g.Run()
-	ctx := sig.Get().RegisterClose(g)
-	return ctx.Done()
+	address = "127.0.0.1:0"
+	return address
+}
+
+func registerMicroServer(node *micro.Node) error {
+	register := micro.NewMicroServiceRegister(Instance.ETCD, "/micro/server", 3)
+	return register.Register(configs.Name, node)
 }

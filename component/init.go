@@ -3,6 +3,8 @@ package component
 import (
 	"sync"
 
+	"go.etcd.io/etcd/clientv3"
+
 	"github.com/xhyonline/xutil/kv"
 	"gorm.io/gorm"
 )
@@ -11,6 +13,7 @@ import (
 type Server struct {
 	MySQL *gorm.DB
 	Redis *kv.RClient
+	ETCD  *clientv3.Client
 }
 
 var (

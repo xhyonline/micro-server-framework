@@ -10,9 +10,11 @@ import (
 
 func main() {
 	// 初始化配置
-	configs.Init(configs.WithBaseConfig(), configs.WithRedis(), configs.WithMySQL())
-	// 初始化 mysql 、redis 等服务组件
-	Init(RegisterLogger())
+	configs.Init(configs.WithBaseConfig(),
+		configs.WithRedis(),
+		configs.WithMySQL(), configs.WithETCD())
+	// 初始化组件
+	Init(RegisterLogger(), RegisterETCD())
 	// 启动 grpc
 	<-internal.Run()
 }
