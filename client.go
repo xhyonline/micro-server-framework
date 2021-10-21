@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func main() {
+func main1() {
 	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
 	if err != nil {
 		log.Fatal(err)

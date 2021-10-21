@@ -52,12 +52,12 @@ func Run() <-chan struct{} {
 	addr := l.Addr().(*net.TCPAddr)
 	port := addr.Port
 	ip := addr.IP.String()
-	s := grpc.NewServer()
-	g := &grpcInstance{Server: s, listener: l}
+	g := &grpcInstance{Server: grpc.NewServer(), listener: l}
 	golang.RegisterRunnerServer(g.Server, &rpc.Service{})
 	g.Run()
 	ctx := sig.Get().RegisterClose(g)
 
+	initDebugPProf()
 	// 服务注册
 	if err := micro.NewMicroServiceRegister(Instance.ETCD, configs.Instance.ETCD.Prefix, 10).
 		Register(configs.Name, &micro.Node{
