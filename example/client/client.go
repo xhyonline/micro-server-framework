@@ -24,7 +24,7 @@ func main() {
 	for {
 		resp, err := client.Hello(context.Background(), &basic.Empty{})
 		if err != nil {
-			logger.Error("发生错误了" + err.Error())
+			logger.Error("请求失败:" + err.Error())
 			continue
 		}
 		fmt.Println(resp.GetData())
