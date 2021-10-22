@@ -15,7 +15,7 @@ import (
 
 func main() {
 	// 初始化配置
-	configs.Init(configs.WithBaseConfig(), configs.WithRedis(), configs.WithMySQL(), configs.WithETCD())
+	configs.Init(configs.WithETCD())
 	// 初始化微服务组件
 	component.Init(component.RegisterETCD())
 	// 启动 grpc

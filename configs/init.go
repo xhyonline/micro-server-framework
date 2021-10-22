@@ -12,8 +12,7 @@ import (
 // Env 当前环境
 var Env = "dev"
 
-// Name 服务名
-var Name = "micro-server-framework"
+var Name = "myapp"
 
 type Config struct {
 	Base  *Base  `toml:"base"`
@@ -100,12 +99,6 @@ func WithMySQL() Option {
 func WithRedis() Option {
 	return func() string {
 		return filePath + "redis.toml"
-	}
-}
-
-func WithBaseConfig() Option {
-	return func() string {
-		return filePath + Name + ".toml"
 	}
 }
 
