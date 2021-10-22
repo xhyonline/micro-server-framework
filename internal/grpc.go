@@ -6,19 +6,18 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/xhyonline/xutil/micro"
+	"github.com/xhyonline/micro-server-framework/component"
 
+	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	"github.com/xhyonline/micro-server-framework/configs"
 	"github.com/xhyonline/micro-server-framework/gen/golang"
 	"github.com/xhyonline/micro-server-framework/rpc"
-
-	"github.com/xhyonline/micro-server-framework/configs"
-
 	"github.com/xhyonline/xutil/helper"
+	"github.com/xhyonline/xutil/logger"
+	"github.com/xhyonline/xutil/micro"
 	"github.com/xhyonline/xutil/sig"
 	"google.golang.org/grpc"
-
-	// nolint
-	. "github.com/xhyonline/micro-server-framework/component" // 忽略包名
 )
 
 type grpcInstance struct {
@@ -28,74 +27,80 @@ type grpcInstance struct {
 
 // GracefulClose 优雅停止
 func (s *grpcInstance) GracefulClose() {
-	Logger.Info("服务" + configs.Name + "接收到关闭通知")
+	logger.Info("服务" + configs.Name + "接收到关闭通知")
 	s.GracefulStop()
-	Logger.Info("服务" + configs.Name + "已优雅停止")
+	logger.Info("服务" + configs.Name + "已优雅停止")
 }
 
 // Run 启动
 func (s *grpcInstance) Run() {
 	go func() {
 		if err := s.Serve(s.listener); err != nil {
-			Logger.Errorf("服务 %s 启动失败 %s", configs.Name, err)
+			logger.Errorf("服务 %s 启动失败 %s", configs.Name, err)
 			os.Exit(1)
 		}
 	}()
 }
 
 func Run() <-chan struct{} {
-	l, err := net.Listen("tcp", internalAddress())
+	ip := internalIP()
+	port := strconv.Itoa(configs.Instance.Base.Port)
+	l, err := net.Listen("tcp", ip+":"+port)
 	if err != nil {
-		Logger.Errorf("监听失败 %s", err)
+		logger.Errorf("%s 监听失败 %s", ip+":"+port, err)
 		return nil
 	}
-	addr := l.Addr().(*net.TCPAddr)
-	port := addr.Port
-	ip := addr.IP.String()
-	g := &grpcInstance{Server: grpc.NewServer(), listener: l}
+	g := &grpcInstance{Server: grpc.NewServer(registerMiddleware()...), listener: l}
 	golang.RegisterRunnerServer(g.Server, &rpc.Service{})
 	g.Run()
 	ctx := sig.Get().RegisterClose(g)
 
-	initDebugPProf()
+	pprofMonitor()
 	// 服务注册
-	if err := micro.NewMicroServiceRegister(Instance.ETCD, configs.Instance.ETCD.Prefix, 10).
+	if err := micro.NewMicroServiceRegister(component.Instance.ETCD, configs.Instance.ETCD.Prefix, 10).
 		Register(configs.Name, &micro.Node{
 			Host: ip,
-			Port: strconv.Itoa(port),
+			Port: port,
 		}); err != nil {
-		Logger.Errorf("服务注册失败 %s", err)
+		logger.Errorf("服务注册失败 %s", err)
 		return nil
 	}
 
-	Logger.Info("服务"+configs.Name, "已启动,启动地址:"+fmt.Sprintf("%s:%d", ip, port))
+	logger.Info("服务"+configs.Name, "已启动,启动地址:"+fmt.Sprintf("%s:%s", ip, port))
 	return ctx.Done()
 }
 
-// internalAddress 获取服务地址
-func internalAddress() string {
+// internalIP 获取内网 IP
+func internalIP() string {
+	var address = "127.0.0.1"
 	addr, err := helper.IntranetAddress()
 	if err != nil {
-		Logger.Errorf("获取内网地址失败 %s", err)
-		return ""
+		logger.Errorf("获取内网地址失败,服务停止 %s", err)
+		os.Exit(1)
 	}
-	v, ok := addr["eth0"]
-	if !ok {
-		Logger.Errorf("未发现内网网卡 eth0")
-		Logger.Errorf("网卡信息 %+v", addr)
-		return ""
-	}
+	v, _ := addr["eth0"]
 	var ip net.IP
 	for _, item := range v {
 		if ip = item.To4(); ip != nil {
 			break
 		}
 	}
-	if ip.String() == "" {
-		Logger.Errorf("未发现 IPv4 地址")
-		return ""
+	if ip != nil {
+		address = ip.String()
+	} else {
+		logger.Errorf("未发现 IPv4 地址,将使用 %s 替代", address)
 	}
-	address := ip.String() + ":0"
-	address = "127.0.0.1:0"
+
 	return address
+}
+
+// registerMiddleware 注册中间键
+func registerMiddleware() []grpc.ServerOption {
+	return []grpc.ServerOption{
+		// 处理 panic
+		grpcmiddleware.WithUnaryServerChain(
+			grpcrecovery.UnaryServerInterceptor(RecoveryInterceptor()),
+		),
+		grpc.WriteBufferSize(0), grpc.ReadBufferSize(0),
+	}
 }

@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/xhyonline/xutil/logger"
+
 	"github.com/BurntSushi/toml"
 	"github.com/xhyonline/xutil/helper"
 )
@@ -24,6 +26,7 @@ type Config struct {
 
 type Base struct {
 	Name string `toml:"name"`
+	Port int    `toml:"port"`
 }
 
 type Redis struct {
@@ -73,6 +76,7 @@ func Init(options ...Option) {
 	if exists {
 		Env = "product"
 		filePath = productConfigPath
+		logger.SetLoggerProduct("/tmp/log/go-micro/" + Name + ".log")
 	}
 	for _, v := range options {
 		load(v)
