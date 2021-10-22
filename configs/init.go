@@ -1,9 +1,7 @@
 package configs
 
 import (
-	"fmt"
 	"io/ioutil"
-	"os"
 
 	"github.com/xhyonline/xutil/logger"
 
@@ -35,9 +33,8 @@ type Redis struct {
 }
 
 type ETCD struct {
-	Host   string `toml:"host"`
-	Port   int    `toml:"port"`
-	Prefix string `toml:"prefix"`
+	Host string `toml:"host"`
+	Port int    `toml:"port"`
 }
 
 type MySQL struct {
@@ -57,12 +54,13 @@ type dbCommon struct {
 var Instance = &Config{
 	Redis: new(Redis),
 	MySQL: new(MySQL),
+	ETCD:  new(ETCD),
 }
 
 type Option func() string
 
 // filePath 默认配置文件地址
-var filePath = "./configs/common/"
+var filePath = "../../configs/common/"
 
 const (
 	// 生产环境配置读取配置文件的地址
@@ -88,8 +86,7 @@ func load(option Option) {
 	if exists, _ := helper.PathExists(option()); exists {
 		body, _ := ioutil.ReadFile(option())
 		if _, err := toml.Decode(string(body), Instance); err != nil {
-			fmt.Println("配置文件加载失败")
-			os.Exit(0)
+			logger.Fatalf("配置文件加载失败 %s", err)
 		}
 	}
 }

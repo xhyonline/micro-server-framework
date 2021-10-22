@@ -2,22 +2,22 @@ package rpc
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/xhyonline/micro-server-framework/gen/golang/basic"
-	"github.com/xhyonline/micro-server-framework/gen/golang/user"
+	"github.com/xhyonline/micro-server-framework/gen/golang/hello"
 )
 
 type Service struct {
-	hello
+	Foo
 }
 
-type hello struct {
+type Foo struct {
 }
 
-// hello
-func (s *hello) Hello(context.Context, *basic.Empty) (*user.UserResponse, error) {
-	fmt.Println("打到1")
-	return &user.UserResponse{Name: "小明"}, errors.New("错误了")
+var uid = uuid.NewString()
+
+// Foo
+func (s *Foo) Hello(context.Context, *basic.Empty) (*hello.Response, error) {
+	return &hello.Response{Data: "你好世界,此消息来自机器:" + uid}, nil
 }

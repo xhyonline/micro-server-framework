@@ -4,9 +4,9 @@ package golang;
 
 option go_package = "github.com/xhyonline/micro-server-framework/gen/golang";
 
-import "user/user.proto";
+import "hello/hello.proto";
 import "basic/basic.proto";
 
 service Runner {
-  rpc Hello (basic.Empty) returns (user.UserResponse);
+  rpc Hello (basic.Empty) returns (hello.Response);
 }

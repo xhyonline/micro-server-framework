@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package hello;
+
+option go_package = "github.com/xhyonline/micro-server-framework/gen/golang/hello";
+
+
+// Response
+message Response {
+  string data = 1;
+}

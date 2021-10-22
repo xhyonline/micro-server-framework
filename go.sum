@@ -229,6 +229,10 @@ github.com/xhyonline/xutil v0.1.20210904-0.20211022103614-a9bbbde7025c h1:rz6ckW
 github.com/xhyonline/xutil v0.1.20210904-0.20211022103614-a9bbbde7025c/go.mod h1:fbCLZistujtBpJrjgJu0R8DPMEYTW7JVcSearKoi+dU=
 github.com/xhyonline/xutil v0.1.20211021 h1:AKDlhtpZPyOZFccwEvbhCMuJgsexzubIH6hjeF2dz6U=
 github.com/xhyonline/xutil v0.1.20211021/go.mod h1:fbCLZistujtBpJrjgJu0R8DPMEYTW7JVcSearKoi+dU=
+github.com/xhyonline/xutil v0.1.20211022 h1:Ug/+nEDkSTjlRDspdbJcnE9CxVD4SrH1tyeuraiKkUc=
+github.com/xhyonline/xutil v0.1.20211022/go.mod h1:P/cQDcS6ByVq5krxsp1QFQOxSXgGBC8xvXB+KSWH5tU=
+github.com/xhyonline/xutil v0.1.2021102300 h1:YNJebRv1DgwUR8fzBtKuc8GTcxBmw9bkdTVEhEhc4pQ=
+github.com/xhyonline/xutil v0.1.2021102300/go.mod h1:P/cQDcS6ByVq5krxsp1QFQOxSXgGBC8xvXB+KSWH5tU=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 h1:eY9dn8+vbi4tKz5Qo6v2eYzo7kUS51QINcR5jNpbZS8=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
