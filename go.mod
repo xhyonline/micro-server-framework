@@ -10,7 +10,7 @@ require (
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/xhyonline/xutil v0.1.2021102300
 	go.etcd.io/etcd v3.3.27+incompatible
-	google.golang.org/grpc v1.38.0
+	google.golang.org/grpc v1.26.0
 	gorm.io/gorm v1.21.6
 )
 
